@@ -1,0 +1,40 @@
+class SegmentTree{
+    static int seg[];
+    public SegmentTree(int n){
+        seg = new int[4 * n];
+    }
+    static void build(int idx, int l, int r ,int arr[]) {
+        if (l == r) {
+          seg[idx] = arr[l];
+          return;
+        }
+        int mid = (l + r) / 2;
+        build(2 * idx + 1, l, mid, arr);
+        build(2 * idx + 2, mid + 1, r, arr);
+        seg[idx] = Math.min(seg[2 * idx + 1], seg[2 * idx + 2]);
+      }
+
+    static int query(int idx, int low, int high, int l, int r) {
+        if (r < low || high < l)
+          return Integer.MAX_VALUE;
+    
+        if (low >= l && high <= r)
+          return seg[idx];
+    
+        int mid = (low + high) >> 1;
+        int left = query(2 * idx + 1, low, mid, l, r);
+        int right = query(2 * idx + 2, mid + 1, high, l, r);
+        return Math.min(left, right);
+      }
+
+    static void update(int idx , int low , int high , int pos , int val){
+        if(low == high){
+            seg[idx] = val;
+            return;
+        }
+        int mid = (low+high)/2;
+           if(pos <= mid)update(2 * idx + 1 ,low , mid , pos , val);
+           else update(2 * idx + 2 , mid + 1 ,high , pos , val );
+           seg[idx]= Math.min(seg[2 * idx + 1] , seg[2 * idx + 2]);
+    }
+}
