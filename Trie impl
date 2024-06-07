@@ -1,0 +1,62 @@
+class Node{
+    Node node[] = new Node[26];
+    boolean flag = false;
+
+    public Node(){}
+
+    boolean containsKey(char ch){
+        return (node[ch - 'a'] != null);
+    }
+    void put(char ch , Node item){
+        node[ch -'a'] = item;
+    }
+    
+    Node get(char ch){
+        return node[ch - 'a'];
+    }
+
+    void setFlag(){
+        flag = true;
+    }
+
+    boolean getFlag(){
+        return flag;
+    }
+}
+class Trie {
+
+    Node trieNode;
+    public Trie() {
+        trieNode = new Node();
+    }
+    
+    public void insert(String word) {
+        Node node = trieNode;
+        int n = word.length();
+        for(int i=0;i<n;i++){
+            if(!node.containsKey(word.charAt(i))){
+                node.put(word.charAt(i) , new Node());
+            }
+            node = node.get(word.charAt(i));
+        }
+        node.setFlag();
+    }
+    
+    public boolean search(String word) {
+        Node temp = trieNode;
+        for(int i=0;i<word.length();i++){
+            if(!temp.containsKey(word.charAt(i)))return false;
+            temp = temp.get(word.charAt(i));
+        }
+        return temp.getFlag();
+    }
+    
+    public boolean startsWith(String prefix) {
+        Node temp = trieNode;
+        for(int i=0;i<prefix.length();i++){
+            if(!temp.containsKey(prefix.charAt(i)))return false;
+            temp = temp.get(prefix.charAt(i));
+        }
+        return true;
+    }
+}
