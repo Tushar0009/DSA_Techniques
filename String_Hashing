@@ -1,0 +1,58 @@
+struct hasher{
+	int n, _k, _p;
+	vector<lli> powk,base;
+
+	void init(string s,int k,int p){
+		_k = k, _p = p;
+		n = s.length();
+		powk.resize(n+1);
+		base.resize(n+1);
+		// precompute
+		base[0] = 0;
+		powk[0] = 1;
+		for(int i=0;i<n;i++){
+			int num = (s[i]-'a'+1 )%p;
+			base[i+1] = (1LL *base[i] * k + num)%p;
+			powk[i+1] = (1LL* k * powk[i]) %p;
+		}
+	}
+	lli gethash(int l,int r){
+		lli ans = (base[r+1] - 1LL *base[l]*powk[(r-l+1)])%_p;
+		return (ans+_p)%_p;
+	}
+
+};
+
+struct  double_hash {
+	string temp;
+	hasher a , b;
+	void init(string s){
+		temp = s;
+		a.init(s , 37 , 1000000021);
+		b.init(s , 39 , 1000000009);
+	}
+	pair<lli, lli> getHash(int l , int r) {
+		return {a.gethash(l ,r ) , b.gethash(l , r)};
+	}
+	int lex_order(int i , int j , int len) {
+		int ans = 0;
+		int st = 1 , end = len;
+		while(st <= end) {
+			int mid = (st+end)/2;
+			if(getHash(i , i+mid-1) == getHash(j , j+mid-1)) {
+				ans = mid;
+				st = mid+1;
+			}else {
+				end = mid-1;
+			}
+		}
+		if(ans == len)return 0;
+		else {
+			if(temp[ans+i] < temp[ans+j]) {
+				return -1;
+			}else {
+				return 1;
+			}
+		}
+	}
+};
